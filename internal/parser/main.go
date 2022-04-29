@@ -10,8 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/iamdimka/go-telegram/internal/htmlutil"
-	"golang.org/x/net/html"
+	"github.com/iamdimka/go-html"
 )
 
 func must(err error, msg ...interface{}) {
@@ -32,7 +31,7 @@ func main() {
 	root, err := html.Parse(res.Body)
 	must(err, "could not parse html document")
 
-	body := htmlutil.NewNode(root).QuerySelector("body")
+	body := root.QuerySelector("body")
 
 	models := make([]*APIStruct, 0)
 	requests := make([]*APIMethod, 0)
@@ -49,8 +48,8 @@ func main() {
 		}
 	}
 
-	must(writeJSON("models.json", models))
-	must(writeJSON("requests.json", requests))
+	must(writeJSON("data/models.json", models))
+	must(writeJSON("data/requests.json", requests))
 	must(writeGo("models.go", "telegram", models, func(it *APIStruct, buf *bytes.Buffer) {
 		buf.WriteString("\n\n")
 		writeMultilineComment(buf, "// ", it.Description)
@@ -252,7 +251,7 @@ func writeGo[T interface{}](filename, packageName string, data []T, fn func(it T
 	return err
 }
 
-func parse(node *htmlutil.Node) interface{} {
+func parse(node *html.Node) interface{} {
 	next := node.Next("h4")
 	title := node.InnerText()
 	description := node.Next("p")
@@ -383,7 +382,7 @@ func formatType(t string, array int) string {
 	return t
 }
 
-func parseText(node *htmlutil.Node) string {
+func parseText(node *html.Node) string {
 	var b strings.Builder
 
 	for node := node.FirstChild(); node != nil; node = node.NextSibling() {
@@ -451,7 +450,7 @@ func parseText(node *htmlutil.Node) string {
 	).Replace(b.String())
 }
 
-func parseType(node *htmlutil.Node, name string) string {
+func parseType(node *html.Node, name string) string {
 	if node == nil {
 		return ""
 	}

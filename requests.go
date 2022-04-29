@@ -1278,7 +1278,7 @@ type SetChatMenuButtonRequest struct {
 	// Unique identifier for the target private chat. If not specified, default bot's
 	// menu button will be changed
 	ChatId int64 `json:"chat_id,omitempty"`
-	// A JSON-serialized object for the new bot's menu button. Defaults to
+	// A JSON-serialized object for the bot's new menu button. Defaults to
 	// MenuButtonDefault
 	MenuButton json.RawMessage `json:"menu_button,omitempty"`
 }

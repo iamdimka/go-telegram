@@ -1,5 +1,4 @@
 .*
 !.gitignore
-*.json
 /internal/test
 go.sum

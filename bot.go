@@ -17,6 +17,7 @@ type Bot struct {
 	url       string
 	pollError error
 
+	PollTimeout   int
 	HTTPClient    *http.Client
 	JSONMarshal   func(interface{}) ([]byte, error)
 	JSONUnmarshal func([]byte, interface{}) error
@@ -27,6 +28,7 @@ func NewBot(token string) *Bot {
 
 	return &Bot{
 		url:           BaseURL + "bot" + token + "/",
+		PollTimeout:   30,
 		HTTPClient:    http.DefaultClient,
 		JSONMarshal:   json.Marshal,
 		JSONUnmarshal: json.Unmarshal,
@@ -88,7 +90,7 @@ func (b *Bot) PollUpdates(offset int64, updates ...string) <-chan *Update {
 	channel := make(chan *Update, 1)
 	request := GetUpdatesRequest{
 		Offset:         offset,
-		Timeout:        30,
+		Timeout:        b.PollTimeout,
 		AllowedUpdates: updates,
 	}
 

@@ -20,6 +20,9 @@ Made for personal usage, but feel free to reuse it (it you find something useful
   // or redefine client
   bot.HTTPClient = http.DefaultClient
 
+  // or redefine poll timeout
+  bot.PollTimeout = 5 // default 30
+
   // you can call any api
   result, err := bot.GetMe()
 
