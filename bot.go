@@ -17,7 +17,6 @@ type Bot struct {
 	url       string
 	pollError error
 
-	PollTimeout   int
 	HTTPClient    *http.Client
 	JSONMarshal   func(interface{}) ([]byte, error)
 	JSONUnmarshal func([]byte, interface{}) error
@@ -28,7 +27,6 @@ func NewBot(token string) *Bot {
 
 	return &Bot{
 		url:           BaseURL + "bot" + token + "/",
-		PollTimeout:   30,
 		HTTPClient:    http.DefaultClient,
 		JSONMarshal:   json.Marshal,
 		JSONUnmarshal: json.Unmarshal,
@@ -36,6 +34,10 @@ func NewBot(token string) *Bot {
 }
 
 func (b *Bot) request(method string, request interface{}, result interface{}) error {
+	return b.doRequest(b.HTTPClient.Do, method, request, result)
+}
+
+func (b *Bot) doRequest(do func(req *http.Request) (*http.Response, error), method string, request interface{}, result interface{}) error {
 	httpMethod := http.MethodGet
 	var body io.Reader
 
@@ -58,7 +60,7 @@ func (b *Bot) request(method string, request interface{}, result interface{}) er
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	res, err := b.HTTPClient.Do(req)
+	res, err := do(req)
 	if err != nil {
 		return err
 	}
@@ -83,37 +85,4 @@ func (b *Bot) request(method string, request interface{}, result interface{}) er
 
 func (b *Bot) PollError() error {
 	return b.pollError
-}
-
-func (b *Bot) PollUpdates(offset int64, updates ...string) <-chan *Update {
-	b.pollError = nil
-	channel := make(chan *Update, 1)
-	request := GetUpdatesRequest{
-		Offset:         offset,
-		Timeout:        b.PollTimeout,
-		AllowedUpdates: updates,
-	}
-
-	go func() {
-		for {
-			request.Offset = offset
-			res, err := b.GetUpdates(&request)
-
-			if err != nil {
-				b.pollError = err
-				close(channel)
-				return
-			}
-
-			for _, update := range res {
-				channel <- update
-
-				if update.UpdateId >= offset {
-					offset = update.UpdateId + 1
-				}
-			}
-		}
-	}()
-
-	return channel
 }

@@ -20,16 +20,20 @@ Made for personal usage, but feel free to reuse it (it you find something useful
   // or redefine client
   bot.HTTPClient = http.DefaultClient
 
-  // or redefine poll timeout
-  bot.PollTimeout = 5 // default 30
-
   // you can call any api
   result, err := bot.GetMe()
 
   result2, err := bot.GetUpdates(&telegram.GetUpdatesRequest{Offset: -5})
 
   // or you can PollUpdates
-  channel := PollUpdates(0, "message")
+  // it accepts different options:
+  // telegram.WithAllowedUpdates(updates ...string)
+  // telegram.WithOffset(int)
+  // telegram.WithTimeout(int) - set the timeout in GetUpdatesRequest; default = 30
+  // telegram.WithLimit(int)
+  // telegram.WithClient(*http.Client) - set custom http client
+  // telegram.WithContext(context.Context) - set context for each request
+  channel := PollUpdates()
   for update := range channel {
     // do something with update here
   }
