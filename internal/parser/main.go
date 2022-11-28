@@ -121,6 +121,12 @@ func main() {
 		buf.WriteString(") (result ")
 		buf.WriteString(returnType)
 		buf.WriteString(", err error) {\n")
+		if returnType[0] == '*' {
+			buf.WriteString("\tresult = &")
+			buf.WriteString(returnType[1:])
+			buf.WriteString("{}")
+			buf.WriteByte('\n')
+		}
 		buf.WriteString("\terr = b.request(\"")
 		buf.WriteString(it.Name)
 		buf.WriteByte('"')
@@ -134,6 +140,9 @@ func main() {
 			buf.WriteByte('&')
 		}
 		buf.WriteString("result)\n")
+		if returnType[0] == '*' {
+			buf.WriteString("\tif err != nil {\n\t\tresult = nil;\n\t}\n")
+		}
 		buf.WriteString("\treturn\n")
 		buf.WriteByte('}')
 	}))
@@ -333,7 +342,8 @@ func parse(node *html.Node) interface{} {
 func parseReturn(text string) string {
 	for _, tpl := range []string{
 		`([aA]n [aA]rray of).+?([A-Z][a-zA-Z]+).+?is returned`,
-		`[rR]eturns ([aA]rray of )?([a-zA-Z*]+) on success`,
+		`[rR]eturns an ([aA]rray of )([A-Z][a-zA-Z]+) `,
+		`[rR]eturns ([aA]rray of )?([a-zA-Z]+) on success`,
 		`[oO]n success, returns[^A-Z]+?(\*?[aA]rray\*? of )?([A-Z][a-zA-Z]+)`,
 		`[oO]n success,[^A-Z]+?(\*?[aA]rray\*? of )?([A-Z][a-zA-Z*]+).+?is returned`,
 		`[rR]eturns.+?([A-Z][a-zA-Z]+)`,

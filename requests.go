@@ -2,8 +2,8 @@ package telegram
 
 import "encoding/json"
 
-// Use this method to receive incoming updates using long polling (wiki). An Array
-// of Update objects is returned.
+// Use this method to receive incoming updates using long polling (wiki). Returns
+// an Array of Update objects.
 //
 // **Notes**
 // **1.** This method will not work if an outgoing webhook is set
@@ -38,9 +38,9 @@ type GetUpdatesRequest struct {
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 }
 
-// Use this method to specify a url and receive incoming updates via an outgoing
+// Use this method to specify a URL and receive incoming updates via an outgoing
 // webhook. Whenever there is an update for the bot, we will send an HTTPS POST
-// request to the specified url, containing a JSON-serialized Update. In case of
+// request to the specified URL, containing a JSON-serialized Update. In case of
 // an unsuccessful request, we will give up after a reasonable amount of attempts.
 // Returns *True* on success.
 //
@@ -51,12 +51,12 @@ type GetUpdatesRequest struct {
 // certificate, you need to upload your public key certificate using *certificate*
 // parameter. Please upload as InputFile, sending a String will not work.
 // **3.**
-// Ports currently supported *for Webhooks*: **443, 80, 88, 8443**.
-// **NEW!** If
-// you're having any trouble setting up webhooks, please check out this amazing
-// guide to Webhooks.
+// Ports currently supported *for webhooks*: **443, 80, 88, 8443**.
+// If you're
+// having any trouble setting up webhooks, please check out this amazing guide to
+// webhooks.
 type SetWebhookRequest struct {
-	// HTTPS url to send updates to. Use an empty string to remove webhook integration
+	// HTTPS URL to send updates to. Use an empty string to remove webhook integration
 	Url string `json:"url"`
 	// Upload your public key certificate so that the root certificate in use can be
 	// checked. See our self-signed guide for details.
@@ -64,7 +64,7 @@ type SetWebhookRequest struct {
 	// The fixed IP address which will be used to send webhook requests instead of the
 	// IP address resolved through DNS
 	IpAddress string `json:"ip_address,omitempty"`
-	// Maximum allowed number of simultaneous HTTPS connections to the webhook for
+	// The maximum allowed number of simultaneous HTTPS connections to the webhook for
 	// update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on
 	// your bot's server, and higher values to increase your bot's throughput.
 	MaxConnections int `json:"max_connections,omitempty"`
@@ -80,6 +80,11 @@ type SetWebhookRequest struct {
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
 	// Pass *True* to drop all pending updates
 	DropPendingUpdates bool `json:"drop_pending_updates,omitempty"`
+	// A secret token to be sent in a header "X-Telegram-Bot-Api-Secret-Token" in
+	// every webhook request, 1-256 characters. Only characters `A-Z`, `a-z`, `0-9`,
+	// `_` and `-` are allowed. The header is useful to ensure that the request comes
+	// from a webhook set by you.
+	SecretToken string `json:"secret_token,omitempty"`
 }
 
 // Use this method to remove webhook integration if you decide to switch back to
@@ -122,6 +127,9 @@ type SendMessageRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Text of the message to be sent, 1-4096 characters after entities parsing
 	Text string `json:"text"`
 	// Mode for parsing entities in the message text. See formatting options for more
@@ -138,7 +146,7 @@ type SendMessageRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -153,6 +161,9 @@ type ForwardMessageRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Unique identifier for the chat where the original message was sent (or channel
 	// username in the format `@channelusername`)
 	FromChatId interface{} `json:"from_chat_id"`
@@ -165,13 +176,17 @@ type ForwardMessageRequest struct {
 }
 
 // Use this method to copy messages of any kind. Service messages and invoice
-// messages can't be copied. The method is analogous to the method forwardMessage,
-// but the copied message doesn't have a link to the original message. Returns the
-// MessageId of the sent message on success.
+// messages can't be copied. A quiz poll can be copied only if the value of the
+// field *correct_option_id* is known to the bot. The method is analogous to the
+// method forwardMessage, but the copied message doesn't have a link to the
+// original message. Returns the MessageId of the sent message on success.
 type CopyMessageRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Unique identifier for the chat where the original message was sent (or channel
 	// username in the format `@channelusername`)
 	FromChatId interface{} `json:"from_chat_id"`
@@ -192,7 +207,7 @@ type CopyMessageRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -206,12 +221,15 @@ type SendPhotoRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Photo to send. Pass a file_id as String to send a photo that exists on the
 	// Telegram servers (recommended), pass an HTTP URL as a String for Telegram to
 	// get a photo from the Internet, or upload a new photo using multipart/form-data.
 	// The photo must be at most 10 MB in size. The photo's width and height must not
-	// exceed 10000 in total. Width and height ratio must be at most 20. More info on
-	// Sending Files »
+	// exceed 10000 in total. Width and height ratio must be at most 20. More
+	// information on Sending Files »
 	Photo json.RawMessage `json:"photo"`
 	// Photo caption (may also be used when resending photos by *file_id*), 0-1024
 	// characters after entities parsing
@@ -228,7 +246,7 @@ type SendPhotoRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -245,10 +263,13 @@ type SendAudioRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Audio file to send. Pass a file_id as String to send an audio file that exists
 	// on the Telegram servers (recommended), pass an HTTP URL as a String for
 	// Telegram to get an audio file from the Internet, or upload a new one using
-	// multipart/form-data. More info on Sending Files »
+	// multipart/form-data. More information on Sending Files »
 	Audio json.RawMessage `json:"audio"`
 	// Audio caption, 0-1024 characters after entities parsing
 	Caption string `json:"caption,omitempty"`
@@ -270,7 +291,8 @@ type SendAudioRequest struct {
 	// if the file is not uploaded using multipart/form-data. Thumbnails can't be
 	// reused and can be only uploaded as a new file, so you can pass
 	// "attach://<file_attach_name>" if the thumbnail was uploaded using
-	// multipart/form-data under <file_attach_name>. More info on Sending Files »
+	// multipart/form-data under <file_attach_name>. More information on Sending Files
+	// »
 	Thumb json.RawMessage `json:"thumb,omitempty"`
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -278,7 +300,7 @@ type SendAudioRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -294,10 +316,13 @@ type SendDocumentRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// File to send. Pass a file_id as String to send a file that exists on the
 	// Telegram servers (recommended), pass an HTTP URL as a String for Telegram to
 	// get a file from the Internet, or upload a new one using multipart/form-data.
-	// More info on Sending Files »
+	// More information on Sending Files »
 	Document json.RawMessage `json:"document"`
 	// Thumbnail of the file sent; can be ignored if thumbnail generation for the file
 	// is supported server-side. The thumbnail should be in JPEG format and less than
@@ -305,7 +330,8 @@ type SendDocumentRequest struct {
 	// if the file is not uploaded using multipart/form-data. Thumbnails can't be
 	// reused and can be only uploaded as a new file, so you can pass
 	// "attach://<file_attach_name>" if the thumbnail was uploaded using
-	// multipart/form-data under <file_attach_name>. More info on Sending Files »
+	// multipart/form-data under <file_attach_name>. More information on Sending Files
+	// »
 	Thumb json.RawMessage `json:"thumb,omitempty"`
 	// Document caption (may also be used when resending documents by *file_id*),
 	// 0-1024 characters after entities parsing
@@ -325,7 +351,7 @@ type SendDocumentRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -334,18 +360,21 @@ type SendDocumentRequest struct {
 	ReplyMarkup interface{} `json:"reply_markup,omitempty"`
 }
 
-// Use this method to send video files, Telegram clients support mp4 videos (other
-// formats may be sent as Document). On success, the sent Message is returned.
-// Bots can currently send video files of up to 50 MB in size, this limit may be
-// changed in the future.
+// Use this method to send video files, Telegram clients support MPEG4 videos
+// (other formats may be sent as Document). On success, the sent Message is
+// returned. Bots can currently send video files of up to 50 MB in size, this
+// limit may be changed in the future.
 type SendVideoRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Video to send. Pass a file_id as String to send a video that exists on the
 	// Telegram servers (recommended), pass an HTTP URL as a String for Telegram to
 	// get a video from the Internet, or upload a new video using multipart/form-data.
-	// More info on Sending Files »
+	// More information on Sending Files »
 	Video json.RawMessage `json:"video"`
 	// Duration of sent video in seconds
 	Duration int `json:"duration,omitempty"`
@@ -359,7 +388,8 @@ type SendVideoRequest struct {
 	// if the file is not uploaded using multipart/form-data. Thumbnails can't be
 	// reused and can be only uploaded as a new file, so you can pass
 	// "attach://<file_attach_name>" if the thumbnail was uploaded using
-	// multipart/form-data under <file_attach_name>. More info on Sending Files »
+	// multipart/form-data under <file_attach_name>. More information on Sending Files
+	// »
 	Thumb json.RawMessage `json:"thumb,omitempty"`
 	// Video caption (may also be used when resending videos by *file_id*), 0-1024
 	// characters after entities parsing
@@ -370,7 +400,7 @@ type SendVideoRequest struct {
 	// A JSON-serialized list of special entities that appear in the caption, which
 	// can be specified instead of *parse_mode*
 	CaptionEntities []*MessageEntity `json:"caption_entities,omitempty"`
-	// Pass *True*, if the uploaded video is suitable for streaming
+	// Pass *True* if the uploaded video is suitable for streaming
 	SupportsStreaming bool `json:"supports_streaming,omitempty"`
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -378,7 +408,7 @@ type SendVideoRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -394,10 +424,13 @@ type SendAnimationRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Animation to send. Pass a file_id as String to send an animation that exists on
 	// the Telegram servers (recommended), pass an HTTP URL as a String for Telegram
 	// to get an animation from the Internet, or upload a new animation using
-	// multipart/form-data. More info on Sending Files »
+	// multipart/form-data. More information on Sending Files »
 	Animation json.RawMessage `json:"animation"`
 	// Duration of sent animation in seconds
 	Duration int `json:"duration,omitempty"`
@@ -411,7 +444,8 @@ type SendAnimationRequest struct {
 	// if the file is not uploaded using multipart/form-data. Thumbnails can't be
 	// reused and can be only uploaded as a new file, so you can pass
 	// "attach://<file_attach_name>" if the thumbnail was uploaded using
-	// multipart/form-data under <file_attach_name>. More info on Sending Files »
+	// multipart/form-data under <file_attach_name>. More information on Sending Files
+	// »
 	Thumb json.RawMessage `json:"thumb,omitempty"`
 	// Animation caption (may also be used when resending animation by *file_id*),
 	// 0-1024 characters after entities parsing
@@ -428,7 +462,7 @@ type SendAnimationRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -446,10 +480,13 @@ type SendVoiceRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Audio file to send. Pass a file_id as String to send a file that exists on the
 	// Telegram servers (recommended), pass an HTTP URL as a String for Telegram to
 	// get a file from the Internet, or upload a new one using multipart/form-data.
-	// More info on Sending Files »
+	// More information on Sending Files »
 	Voice json.RawMessage `json:"voice"`
 	// Voice message caption, 0-1024 characters after entities parsing
 	Caption string `json:"caption,omitempty"`
@@ -467,7 +504,7 @@ type SendVoiceRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -476,17 +513,20 @@ type SendVoiceRequest struct {
 	ReplyMarkup interface{} `json:"reply_markup,omitempty"`
 }
 
-// As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1
+// As of v.4.0, Telegram clients support rounded square MPEG4 videos of up to 1
 // minute long. Use this method to send video messages. On success, the sent
 // Message is returned.
 type SendVideoNoteRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Video note to send. Pass a file_id as String to send a video note that exists
 	// on the Telegram servers (recommended) or upload a new video using
-	// multipart/form-data. More info on Sending Files ». Sending video notes by a
-	// URL is currently unsupported
+	// multipart/form-data. More information on Sending Files ». Sending video notes
+	// by a URL is currently unsupported
 	VideoNote json.RawMessage `json:"video_note"`
 	// Duration of sent video in seconds
 	Duration int `json:"duration,omitempty"`
@@ -498,7 +538,8 @@ type SendVideoNoteRequest struct {
 	// if the file is not uploaded using multipart/form-data. Thumbnails can't be
 	// reused and can be only uploaded as a new file, so you can pass
 	// "attach://<file_attach_name>" if the thumbnail was uploaded using
-	// multipart/form-data under <file_attach_name>. More info on Sending Files »
+	// multipart/form-data under <file_attach_name>. More information on Sending Files
+	// »
 	Thumb json.RawMessage `json:"thumb,omitempty"`
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -506,7 +547,7 @@ type SendVideoNoteRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -522,6 +563,9 @@ type SendMediaGroupRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// A JSON-serialized array describing messages to be sent, must include 2-10 items
 	Media interface{} `json:"media"`
 	// Sends messages silently. Users will receive a notification with no sound.
@@ -530,7 +574,7 @@ type SendMediaGroupRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the messages are a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 }
@@ -541,6 +585,9 @@ type SendLocationRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Latitude of the location
 	Latitude float32 `json:"latitude"`
 	// Longitude of the location
@@ -562,7 +609,7 @@ type SendLocationRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -594,8 +641,8 @@ type EditMessageLiveLocationRequest struct {
 	// Direction in which the user is moving, in degrees. Must be between 1 and 360 if
 	// specified.
 	Heading int `json:"heading,omitempty"`
-	// Maximum distance for proximity alerts about approaching another chat member, in
-	// meters. Must be between 1 and 100000 if specified.
+	// The maximum distance for proximity alerts about approaching another chat
+	// member, in meters. Must be between 1 and 100000 if specified.
 	ProximityAlertRadius int `json:"proximity_alert_radius,omitempty"`
 	// A JSON-serialized object for a new inline keyboard.
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
@@ -624,6 +671,9 @@ type SendVenueRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Latitude of the venue
 	Latitude float32 `json:"latitude"`
 	// Longitude of the venue
@@ -647,7 +697,7 @@ type SendVenueRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -662,6 +712,9 @@ type SendContactRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Contact's phone number
 	PhoneNumber string `json:"phone_number"`
 	// Contact's first name
@@ -676,12 +729,12 @@ type SendContactRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
-	// custom reply keyboard, instructions to remove keyboard or to force a reply from
-	// the user.
+	// custom reply keyboard, instructions to remove reply keyboard or to force a
+	// reply from the user.
 	ReplyMarkup interface{} `json:"reply_markup,omitempty"`
 }
 
@@ -690,6 +743,9 @@ type SendPollRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Poll question, 1-300 characters
 	Question string `json:"question"`
 	// A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
@@ -720,7 +776,7 @@ type SendPollRequest struct {
 	// be at least 5 and no more than 600 seconds in the future. Can't be used
 	// together with *open_period*.
 	CloseDate int `json:"close_date,omitempty"`
-	// Pass *True*, if the poll needs to be immediately closed. This can be useful for
+	// Pass *True* if the poll needs to be immediately closed. This can be useful for
 	// poll preview.
 	IsClosed bool `json:"is_closed,omitempty"`
 	// Sends the message silently. Users will receive a notification with no sound.
@@ -729,7 +785,7 @@ type SendPollRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -744,6 +800,9 @@ type SendDiceRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Emoji on which the dice throw animation is based. Currently, must be one of
 	// "🎲", "🎯", "🏀", "⚽", "🎳", or "🎰". Dice can have values 1-6 for
 	// "🎲", "🎯" and "🎳", values 1-5 for "🏀" and "⚽", and values 1-64 for
@@ -755,7 +814,7 @@ type SendDiceRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -799,15 +858,15 @@ type GetUserProfilePhotosRequest struct {
 	Limit int `json:"limit,omitempty"`
 }
 
-// Use this method to get basic info about a file and prepare it for downloading.
-// For the moment, bots can download files of up to 20MB in size. On success, a
-// File object is returned. The file can then be downloaded via the link
-// `https://api.telegram.org/file/bot<token>/<file_path>`, where `<file_path>` is
-// taken from the response. It is guaranteed that the link will be valid for at
-// least 1 hour. When the link expires, a new one can be requested by calling
-// getFile again.
+// Use this method to get basic information about a file and prepare it for
+// downloading. For the moment, bots can download files of up to 20MB in size. On
+// success, a File object is returned. The file can then be downloaded via the
+// link `https://api.telegram.org/file/bot<token>/<file_path>`, where
+// `<file_path>` is taken from the response. It is guaranteed that the link will
+// be valid for at least 1 hour. When the link expires, a new one can be requested
+// by calling getFile again.
 type GetFileRequest struct {
-	// File identifier to get info about
+	// File identifier to get information about
 	FileId string `json:"file_id"`
 }
 
@@ -878,35 +937,37 @@ type PromoteChatMemberRequest struct {
 	ChatId interface{} `json:"chat_id"`
 	// Unique identifier of the target user
 	UserId int64 `json:"user_id"`
-	// Pass *True*, if the administrator's presence in the chat is hidden
+	// Pass *True* if the administrator's presence in the chat is hidden
 	IsAnonymous bool `json:"is_anonymous,omitempty"`
-	// Pass *True*, if the administrator can access the chat event log, chat
+	// Pass *True* if the administrator can access the chat event log, chat
 	// statistics, message statistics in channels, see channel members, see anonymous
 	// administrators in supergroups and ignore slow mode. Implied by any other
 	// administrator privilege
 	CanManageChat bool `json:"can_manage_chat,omitempty"`
-	// Pass *True*, if the administrator can create channel posts, channels only
+	// Pass *True* if the administrator can create channel posts, channels only
 	CanPostMessages bool `json:"can_post_messages,omitempty"`
-	// Pass *True*, if the administrator can edit messages of other users and can pin
+	// Pass *True* if the administrator can edit messages of other users and can pin
 	// messages, channels only
 	CanEditMessages bool `json:"can_edit_messages,omitempty"`
-	// Pass *True*, if the administrator can delete messages of other users
+	// Pass *True* if the administrator can delete messages of other users
 	CanDeleteMessages bool `json:"can_delete_messages,omitempty"`
-	// Pass *True*, if the administrator can manage video chats
+	// Pass *True* if the administrator can manage video chats
 	CanManageVideoChats bool `json:"can_manage_video_chats,omitempty"`
-	// Pass *True*, if the administrator can restrict, ban or unban chat members
+	// Pass *True* if the administrator can restrict, ban or unban chat members
 	CanRestrictMembers bool `json:"can_restrict_members,omitempty"`
-	// Pass *True*, if the administrator can add new administrators with a subset of
+	// Pass *True* if the administrator can add new administrators with a subset of
 	// their own privileges or demote administrators that he has promoted, directly or
 	// indirectly (promoted by administrators that were appointed by him)
 	CanPromoteMembers bool `json:"can_promote_members,omitempty"`
-	// Pass *True*, if the administrator can change chat title, photo and other
-	// settings
+	// Pass *True* if the administrator can change chat title, photo and other settings
 	CanChangeInfo bool `json:"can_change_info,omitempty"`
-	// Pass *True*, if the administrator can invite new users to the chat
+	// Pass *True* if the administrator can invite new users to the chat
 	CanInviteUsers bool `json:"can_invite_users,omitempty"`
-	// Pass *True*, if the administrator can pin messages, supergroups only
+	// Pass *True* if the administrator can pin messages, supergroups only
 	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+	// Pass *True* if the user is allowed to create, rename, close, and reopen forum
+	// topics, supergroups only
+	CanManageTopics bool `json:"can_manage_topics,omitempty"`
 }
 
 // Use this method to set a custom title for an administrator in a supergroup
@@ -985,8 +1046,8 @@ type CreateChatInviteLinkRequest struct {
 	Name string `json:"name,omitempty"`
 	// Point in time (Unix timestamp) when the link will expire
 	ExpireDate int `json:"expire_date,omitempty"`
-	// Maximum number of users that can be members of the chat simultaneously after
-	// joining the chat via this invite link; 1-99999
+	// The maximum number of users that can be members of the chat simultaneously
+	// after joining the chat via this invite link; 1-99999
 	MemberLimit int `json:"member_limit,omitempty"`
 	// *True*, if users joining the chat via the link need to be approved by chat
 	// administrators. If *True*, *member_limit* can't be specified
@@ -1007,8 +1068,8 @@ type EditChatInviteLinkRequest struct {
 	Name string `json:"name,omitempty"`
 	// Point in time (Unix timestamp) when the link will expire
 	ExpireDate int `json:"expire_date,omitempty"`
-	// Maximum number of users that can be members of the chat simultaneously after
-	// joining the chat via this invite link; 1-99999
+	// The maximum number of users that can be members of the chat simultaneously
+	// after joining the chat via this invite link; 1-99999
 	MemberLimit int `json:"member_limit,omitempty"`
 	// *True*, if users joining the chat via the link need to be approved by chat
 	// administrators. If *True*, *member_limit* can't be specified
@@ -1077,7 +1138,7 @@ type SetChatTitleRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
-	// New chat title, 1-255 characters
+	// New chat title, 1-128 characters
 	Title string `json:"title"`
 }
 
@@ -1103,7 +1164,7 @@ type PinChatMessageRequest struct {
 	ChatId interface{} `json:"chat_id"`
 	// Identifier of a message to pin
 	MessageId int64 `json:"message_id"`
-	// Pass *True*, if it is not necessary to send a notification to all chat members
+	// Pass *True* if it is not necessary to send a notification to all chat members
 	// about the new pinned message. Notifications are always disabled in channels and
 	// private chats.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -1151,10 +1212,8 @@ type GetChatRequest struct {
 	ChatId interface{} `json:"chat_id"`
 }
 
-// Use this method to get a list of administrators in a chat. On success, returns
-// an Array of ChatMember objects that contains information about all chat
-// administrators except other bots. If the chat is a group or a supergroup and no
-// administrators were appointed, only the creator will be returned.
+// Use this method to get a list of administrators in a chat, which aren't bots.
+// Returns an Array of ChatMember objects.
 type GetChatAdministratorsRequest struct {
 	// Unique identifier for the target chat or username of the target supergroup or
 	// channel (in the format `@channelusername`)
@@ -1203,12 +1262,102 @@ type DeleteChatStickerSetRequest struct {
 	ChatId interface{} `json:"chat_id"`
 }
 
+// Use this method to get custom emoji stickers, which can be used as a forum
+// topic icon by any user. Requires no parameters. Returns an Array of Sticker
+// objects.
+type GetForumTopicIconStickersRequest struct {
+}
+
+// Use this method to create a topic in a forum supergroup chat. The bot must be
+// an administrator in the chat for this to work and must have the
+// *can_manage_topics* administrator rights. Returns information about the created
+// topic as a ForumTopic object.
+type CreateForumTopicRequest struct {
+	// Unique identifier for the target chat or username of the target supergroup (in
+	// the format `@supergroupusername`)
+	ChatId interface{} `json:"chat_id"`
+	// Topic name, 1-128 characters
+	Name string `json:"name"`
+	// Color of the topic icon in RGB format. Currently, must be one of 7322096
+	// (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98),
+	// 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)
+	IconColor int `json:"icon_color,omitempty"`
+	// Unique identifier of the custom emoji shown as the topic icon. Use
+	// getForumTopicIconStickers to get all allowed custom emoji identifiers.
+	IconCustomEmojiId string `json:"icon_custom_emoji_id,omitempty"`
+}
+
+// Use this method to edit name and icon of a topic in a forum supergroup chat.
+// The bot must be an administrator in the chat for this to work and must have
+// *can_manage_topics* administrator rights, unless it is the creator of the
+// topic. Returns *True* on success.
+type EditForumTopicRequest struct {
+	// Unique identifier for the target chat or username of the target supergroup (in
+	// the format `@supergroupusername`)
+	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread of the forum topic
+	MessageThreadId int64 `json:"message_thread_id"`
+	// New topic name, 1-128 characters
+	Name string `json:"name"`
+	// New unique identifier of the custom emoji shown as the topic icon. Use
+	// getForumTopicIconStickers to get all allowed custom emoji identifiers.
+	IconCustomEmojiId string `json:"icon_custom_emoji_id"`
+}
+
+// Use this method to close an open topic in a forum supergroup chat. The bot must
+// be an administrator in the chat for this to work and must have the
+// *can_manage_topics* administrator rights, unless it is the creator of the
+// topic. Returns *True* on success.
+type CloseForumTopicRequest struct {
+	// Unique identifier for the target chat or username of the target supergroup (in
+	// the format `@supergroupusername`)
+	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread of the forum topic
+	MessageThreadId int64 `json:"message_thread_id"`
+}
+
+// Use this method to reopen a closed topic in a forum supergroup chat. The bot
+// must be an administrator in the chat for this to work and must have the
+// *can_manage_topics* administrator rights, unless it is the creator of the
+// topic. Returns *True* on success.
+type ReopenForumTopicRequest struct {
+	// Unique identifier for the target chat or username of the target supergroup (in
+	// the format `@supergroupusername`)
+	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread of the forum topic
+	MessageThreadId int64 `json:"message_thread_id"`
+}
+
+// Use this method to delete a forum topic along with all its messages in a forum
+// supergroup chat. The bot must be an administrator in the chat for this to work
+// and must have the *can_delete_messages* administrator rights. Returns *True* on
+// success.
+type DeleteForumTopicRequest struct {
+	// Unique identifier for the target chat or username of the target supergroup (in
+	// the format `@supergroupusername`)
+	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread of the forum topic
+	MessageThreadId int64 `json:"message_thread_id"`
+}
+
+// Use this method to clear the list of pinned messages in a forum topic. The bot
+// must be an administrator in the chat for this to work and must have the
+// *can_pin_messages* administrator right in the supergroup. Returns *True* on
+// success.
+type UnpinAllForumTopicMessagesRequest struct {
+	// Unique identifier for the target chat or username of the target supergroup (in
+	// the format `@supergroupusername`)
+	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread of the forum topic
+	MessageThreadId int64 `json:"message_thread_id"`
+}
+
 // Use this method to send answers to callback queries sent from inline keyboards.
 // The answer will be displayed to the user as a notification at the top of the
 // chat screen or as an alert. On success, *True* is returned.
 //
 // Alternatively, the user can be redirected to the specified Game URL. For this
-// option to work, you must first create a game for your bot via @Botfather and
+// option to work, you must first create a game for your bot via @BotFather and
 // accept the terms. Otherwise, you may use links like `t.me/your_bot?start=XXXX`
 // that open your bot with a parameter.
 type AnswerCallbackQueryRequest struct {
@@ -1221,8 +1370,8 @@ type AnswerCallbackQueryRequest struct {
 	// the top of the chat screen. Defaults to *false*.
 	ShowAlert bool `json:"show_alert,omitempty"`
 	// URL that will be opened by the user's client. If you have created a Game and
-	// accepted the conditions via @Botfather, specify the URL that opens your game
-	// — note that this will only work if the query comes from a *callback_game*
+	// accepted the conditions via @BotFather, specify the URL that opens your game -
+	// note that this will only work if the query comes from a *callback_game*
 	// button.
 	//
 	// Otherwise, you may use links like `t.me/your_bot?start=XXXX` that open
@@ -1234,9 +1383,8 @@ type AnswerCallbackQueryRequest struct {
 	CacheTime int `json:"cache_time,omitempty"`
 }
 
-// Use this method to change the list of the bot's commands. See
-// https://core.telegram.org/bots#commands for more details about bot commands.
-// Returns *True* on success.
+// Use this method to change the list of the bot's commands. See this manual for
+// more details about bot commands. Returns *True* on success.
 type SetMyCommandsRequest struct {
 	// A JSON-serialized list of bot commands to be set as the list of the bot's
 	// commands. At most 100 commands can be specified.
@@ -1262,7 +1410,7 @@ type DeleteMyCommandsRequest struct {
 }
 
 // Use this method to get the current list of the bot's commands for the given
-// scope and user language. Returns Array of BotCommand on success. If commands
+// scope and user language. Returns an Array of BotCommand objects. If commands
 // aren't set, an empty list is returned.
 type GetMyCommandsRequest struct {
 	// A JSON-serialized object, describing scope of users. Defaults to
@@ -1422,20 +1570,22 @@ type StopPollRequest struct {
 // following limitations:
 // - A message can only be deleted if it was sent less than
 // 48 hours ago.
-// - A dice message in a private chat can only be deleted if it was
-// sent more than 24 hours ago.
-// - Bots can delete outgoing messages in private
-// chats, groups, and supergroups.
-// - Bots can delete incoming messages in private
-// chats.
-// - Bots granted *can_post_messages* permissions can delete outgoing
-// messages in channels.
-// - If the bot is an administrator of a group, it can
-// delete any message there.
-// - If the bot has *can_delete_messages* permission in
-// a supergroup or a channel, it can delete any message there.
-// Returns *True* on
-// success.
+// - Service messages about a supergroup, channel, or forum topic
+// creation can't be deleted.
+// - A dice message in a private chat can only be
+// deleted if it was sent more than 24 hours ago.
+// - Bots can delete outgoing
+// messages in private chats, groups, and supergroups.
+// - Bots can delete incoming
+// messages in private chats.
+// - Bots granted *can_post_messages* permissions can
+// delete outgoing messages in channels.
+// - If the bot is an administrator of a
+// group, it can delete any message there.
+// - If the bot has *can_delete_messages*
+// permission in a supergroup or a channel, it can delete any message
+// there.
+// Returns *True* on success.
 type DeleteMessageRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
@@ -1450,10 +1600,13 @@ type SendStickerRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Sticker to send. Pass a file_id as String to send a file that exists on the
 	// Telegram servers (recommended), pass an HTTP URL as a String for Telegram to
 	// get a .WEBP file from the Internet, or upload a new one using
-	// multipart/form-data. More info on Sending Files »
+	// multipart/form-data. More information on Sending Files »
 	Sticker json.RawMessage `json:"sticker"`
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -1461,7 +1614,7 @@ type SendStickerRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// Additional interface options. A JSON-serialized object for an inline keyboard,
@@ -1477,6 +1630,14 @@ type GetStickerSetRequest struct {
 	Name string `json:"name"`
 }
 
+// Use this method to get information about custom emoji stickers by their
+// identifiers. Returns an Array of Sticker objects.
+type GetCustomEmojiStickersRequest struct {
+	// List of custom emoji identifiers. At most 200 custom emoji identifiers can be
+	// specified.
+	CustomEmojiIds []string `json:"custom_emoji_ids"`
+}
+
 // Use this method to upload a .PNG file with a sticker for later use in
 // *createNewStickerSet* and *addStickerToSet* methods (can be used multiple
 // times). Returns the uploaded File on success.
@@ -1485,7 +1646,7 @@ type UploadStickerFileRequest struct {
 	UserId int64 `json:"user_id"`
 	// **PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions
 	// must not exceed 512px, and either width or height must be exactly 512px. More
-	// info on Sending Files »
+	// information on Sending Files »
 	PngSticker json.RawMessage `json:"png_sticker"`
 }
 
@@ -1497,7 +1658,7 @@ type CreateNewStickerSetRequest struct {
 	// User identifier of created sticker set owner
 	UserId int64 `json:"user_id"`
 	// Short name of sticker set, to be used in `t.me/addstickers/` URLs (e.g.,
-	// *animals*). Can contain only english letters, digits and underscores. Must
+	// *animals*). Can contain only English letters, digits and underscores. Must
 	// begin with a letter, can't contain consecutive underscores and must end in
 	// `&#34;_by_<bot_username>&#34;`. `<bot_username>` is case insensitive. 1-64
 	// characters.
@@ -1508,8 +1669,8 @@ type CreateNewStickerSetRequest struct {
 	// must not exceed 512px, and either width or height must be exactly 512px. Pass a
 	// *file_id* as a String to send a file that already exists on the Telegram
 	// servers, pass an HTTP URL as a String for Telegram to get a file from the
-	// Internet, or upload a new one using multipart/form-data. More info on Sending
-	// Files »
+	// Internet, or upload a new one using multipart/form-data. More information on
+	// Sending Files »
 	PngSticker json.RawMessage `json:"png_sticker,omitempty"`
 	// **TGS** animation with the sticker, uploaded using multipart/form-data. See
 	// https://core.telegram.org/stickers#animated-sticker-requirements for technical
@@ -1519,10 +1680,12 @@ type CreateNewStickerSetRequest struct {
 	// https://core.telegram.org/stickers#video-sticker-requirements for technical
 	// requirements
 	WebmSticker json.RawMessage `json:"webm_sticker,omitempty"`
+	// Type of stickers in the set, pass "regular" or "mask". Custom emoji sticker
+	// sets can't be created via the Bot API at the moment. By default, a regular
+	// sticker set is created.
+	StickerType string `json:"sticker_type,omitempty"`
 	// One or more emoji corresponding to the sticker
 	Emojis string `json:"emojis"`
-	// Pass *True*, if a set of mask stickers should be created
-	ContainsMasks bool `json:"contains_masks,omitempty"`
 	// A JSON-serialized object for position where the mask should be placed on faces
 	MaskPosition *MaskPosition `json:"mask_position,omitempty"`
 }
@@ -1541,8 +1704,8 @@ type AddStickerToSetRequest struct {
 	// must not exceed 512px, and either width or height must be exactly 512px. Pass a
 	// *file_id* as a String to send a file that already exists on the Telegram
 	// servers, pass an HTTP URL as a String for Telegram to get a file from the
-	// Internet, or upload a new one using multipart/form-data. More info on Sending
-	// Files »
+	// Internet, or upload a new one using multipart/form-data. More information on
+	// Sending Files »
 	PngSticker json.RawMessage `json:"png_sticker,omitempty"`
 	// **TGS** animation with the sticker, uploaded using multipart/form-data. See
 	// https://core.telegram.org/stickers#animated-sticker-requirements for technical
@@ -1592,7 +1755,7 @@ type SetStickerSetThumbRequest struct {
 	// technical requirements. Pass a *file_id* as a String to send a file that
 	// already exists on the Telegram servers, pass an HTTP URL as a String for
 	// Telegram to get a file from the Internet, or upload a new one using
-	// multipart/form-data. More info on Sending Files ». Animated sticker set
+	// multipart/form-data. More information on Sending Files ». Animated sticker set
 	// thumbnails can't be uploaded via HTTP URL.
 	Thumb json.RawMessage `json:"thumb,omitempty"`
 }
@@ -1608,7 +1771,7 @@ type AnswerInlineQueryRequest struct {
 	// The maximum amount of time in seconds that the result of the inline query may
 	// be cached on the server. Defaults to 300.
 	CacheTime int `json:"cache_time,omitempty"`
-	// Pass *True*, if results may be cached on the server side only for the user that
+	// Pass *True* if results may be cached on the server side only for the user that
 	// sent the query. By default, results may be returned to any user who sends the
 	// same query
 	IsPersonal bool `json:"is_personal,omitempty"`
@@ -1650,6 +1813,9 @@ type SendInvoiceRequest struct {
 	// Unique identifier for the target chat or username of the target channel (in the
 	// format `@channelusername`)
 	ChatId interface{} `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Product name, 1-32 characters
 	Title string `json:"title"`
 	// Product description, 1-255 characters
@@ -1657,7 +1823,7 @@ type SendInvoiceRequest struct {
 	// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the
 	// user, use for your internal processes.
 	Payload string `json:"payload"`
-	// Payments provider token, obtained via Botfather
+	// Payment provider token, obtained via @BotFather
 	ProviderToken string `json:"provider_token"`
 	// Three-letter ISO 4217 currency code, see more on currencies
 	Currency string `json:"currency"`
@@ -1681,7 +1847,7 @@ type SendInvoiceRequest struct {
 	// of the sent message will have a *URL* button with a deep link to the bot
 	// (instead of a *Pay* button), with the value used as the start parameter
 	StartParameter string `json:"start_parameter,omitempty"`
-	// A JSON-serialized data about the invoice, which will be shared with the payment
+	// JSON-serialized data about the invoice, which will be shared with the payment
 	// provider. A detailed description of required fields should be provided by the
 	// payment provider.
 	ProviderData string `json:"provider_data,omitempty"`
@@ -1689,25 +1855,25 @@ type SendInvoiceRequest struct {
 	// marketing image for a service. People like it better when they see what they
 	// are paying for.
 	PhotoUrl string `json:"photo_url,omitempty"`
-	// Photo size
+	// Photo size in bytes
 	PhotoSize int `json:"photo_size,omitempty"`
 	// Photo width
 	PhotoWidth int `json:"photo_width,omitempty"`
 	// Photo height
 	PhotoHeight int `json:"photo_height,omitempty"`
-	// Pass *True*, if you require the user's full name to complete the order
+	// Pass *True* if you require the user's full name to complete the order
 	NeedName bool `json:"need_name,omitempty"`
-	// Pass *True*, if you require the user's phone number to complete the order
+	// Pass *True* if you require the user's phone number to complete the order
 	NeedPhoneNumber bool `json:"need_phone_number,omitempty"`
-	// Pass *True*, if you require the user's email address to complete the order
+	// Pass *True* if you require the user's email address to complete the order
 	NeedEmail bool `json:"need_email,omitempty"`
-	// Pass *True*, if you require the user's shipping address to complete the order
+	// Pass *True* if you require the user's shipping address to complete the order
 	NeedShippingAddress bool `json:"need_shipping_address,omitempty"`
-	// Pass *True*, if user's phone number should be sent to provider
+	// Pass *True* if the user's phone number should be sent to provider
 	SendPhoneNumberToProvider bool `json:"send_phone_number_to_provider,omitempty"`
-	// Pass *True*, if user's email address should be sent to provider
+	// Pass *True* if the user's email address should be sent to provider
 	SendEmailToProvider bool `json:"send_email_to_provider,omitempty"`
-	// Pass *True*, if the final price depends on the shipping method
+	// Pass *True* if the final price depends on the shipping method
 	IsFlexible bool `json:"is_flexible,omitempty"`
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -1715,13 +1881,70 @@ type SendInvoiceRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// A JSON-serialized object for an inline keyboard. If empty, one 'Pay `total
 	// price`' button will be shown. If not empty, the first button must be a Pay
 	// button.
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+}
+
+// Use this method to create a link for an invoice. Returns the created invoice
+// link as *String* on success.
+type CreateInvoiceLinkRequest struct {
+	// Product name, 1-32 characters
+	Title string `json:"title"`
+	// Product description, 1-255 characters
+	Description string `json:"description"`
+	// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the
+	// user, use for your internal processes.
+	Payload string `json:"payload"`
+	// Payment provider token, obtained via BotFather
+	ProviderToken string `json:"provider_token"`
+	// Three-letter ISO 4217 currency code, see more on currencies
+	Currency string `json:"currency"`
+	// Price breakdown, a JSON-serialized list of components (e.g. product price, tax,
+	// discount, delivery cost, delivery tax, bonus, etc.)
+	Prices []*LabeledPrice `json:"prices"`
+	// The maximum accepted amount for tips in the *smallest units* of the currency
+	// (integer, **not** float/double). For example, for a maximum tip of `US$ 1.45`
+	// pass `max_tip_amount = 145`. See the *exp* parameter in currencies.json, it
+	// shows the number of digits past the decimal point for each currency (2 for the
+	// majority of currencies). Defaults to 0
+	MaxTipAmount int `json:"max_tip_amount,omitempty"`
+	// A JSON-serialized array of suggested amounts of tips in the *smallest units* of
+	// the currency (integer, **not** float/double). At most 4 suggested tip amounts
+	// can be specified. The suggested tip amounts must be positive, passed in a
+	// strictly increased order and must not exceed *max_tip_amount*.
+	SuggestedTipAmounts []int `json:"suggested_tip_amounts,omitempty"`
+	// JSON-serialized data about the invoice, which will be shared with the payment
+	// provider. A detailed description of required fields should be provided by the
+	// payment provider.
+	ProviderData string `json:"provider_data,omitempty"`
+	// URL of the product photo for the invoice. Can be a photo of the goods or a
+	// marketing image for a service.
+	PhotoUrl string `json:"photo_url,omitempty"`
+	// Photo size in bytes
+	PhotoSize int `json:"photo_size,omitempty"`
+	// Photo width
+	PhotoWidth int `json:"photo_width,omitempty"`
+	// Photo height
+	PhotoHeight int `json:"photo_height,omitempty"`
+	// Pass *True* if you require the user's full name to complete the order
+	NeedName bool `json:"need_name,omitempty"`
+	// Pass *True* if you require the user's phone number to complete the order
+	NeedPhoneNumber bool `json:"need_phone_number,omitempty"`
+	// Pass *True* if you require the user's email address to complete the order
+	NeedEmail bool `json:"need_email,omitempty"`
+	// Pass *True* if you require the user's shipping address to complete the order
+	NeedShippingAddress bool `json:"need_shipping_address,omitempty"`
+	// Pass *True* if the user's phone number should be sent to the provider
+	SendPhoneNumberToProvider bool `json:"send_phone_number_to_provider,omitempty"`
+	// Pass *True* if the user's email address should be sent to the provider
+	SendEmailToProvider bool `json:"send_email_to_provider,omitempty"`
+	// Pass *True* if the final price depends on the shipping method
+	IsFlexible bool `json:"is_flexible,omitempty"`
 }
 
 // If you sent an invoice requesting a shipping address and the parameter
@@ -1731,14 +1954,14 @@ type SendInvoiceRequest struct {
 type AnswerShippingQueryRequest struct {
 	// Unique identifier for the query to be answered
 	ShippingQueryId string `json:"shipping_query_id"`
-	// Specify *True* if delivery to the specified address is possible and False if
+	// Pass *True* if delivery to the specified address is possible and *False* if
 	// there are any problems (for example, if delivery to the specified address is
 	// not possible)
 	Ok bool `json:"ok"`
 	// Required if *ok* is *True*. A JSON-serialized array of available shipping
 	// options.
 	ShippingOptions []*ShippingOption `json:"shipping_options,omitempty"`
-	// Required if *ok* is False. Error message in human readable form that explains
+	// Required if *ok* is *False*. Error message in human readable form that explains
 	// why it is impossible to complete the order (e.g. &#34;Sorry, delivery to your
 	// desired address is unavailable'). Telegram will display this message to the
 	// user.
@@ -1779,8 +2002,11 @@ type SetPassportDataErrorsRequest struct {
 type SendGameRequest struct {
 	// Unique identifier for the target chat
 	ChatId int64 `json:"chat_id"`
+	// Unique identifier for the target message thread (topic) of the forum; for forum
+	// supergroups only
+	MessageThreadId int64 `json:"message_thread_id,omitempty"`
 	// Short name of the game, serves as the unique identifier for the game. Set up
-	// your games via Botfather.
+	// your games via @BotFather.
 	GameShortName string `json:"game_short_name"`
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -1788,7 +2014,7 @@ type SendGameRequest struct {
 	ProtectContent bool `json:"protect_content,omitempty"`
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64 `json:"reply_to_message_id,omitempty"`
-	// Pass *True*, if the message should be sent even if the specified replied-to
+	// Pass *True* if the message should be sent even if the specified replied-to
 	// message is not found
 	AllowSendingWithoutReply bool `json:"allow_sending_without_reply,omitempty"`
 	// A JSON-serialized object for an inline keyboard. If empty, one 'Play
@@ -1806,10 +2032,10 @@ type SetGameScoreRequest struct {
 	UserId int64 `json:"user_id"`
 	// New score, must be non-negative
 	Score int `json:"score"`
-	// Pass *True*, if the high score is allowed to decrease. This can be useful when
+	// Pass *True* if the high score is allowed to decrease. This can be useful when
 	// fixing mistakes or banning cheaters
 	Force bool `json:"force,omitempty"`
-	// Pass *True*, if the game message should not be automatically edited to include
+	// Pass *True* if the game message should not be automatically edited to include
 	// the current scoreboard
 	DisableEditMessage bool `json:"disable_edit_message,omitempty"`
 	// Required if *inline_message_id* is not specified. Unique identifier for the
@@ -1823,12 +2049,12 @@ type SetGameScoreRequest struct {
 }
 
 // Use this method to get data for high score tables. Will return the score of the
-// specified user and several of their neighbors in a game. On success, returns an
-// *Array* of GameHighScore objects.
+// specified user and several of their neighbors in a game. Returns an Array of
+// GameHighScore objects.
 //
 // This method will currently return scores for the target user, plus two of their
 // closest neighbors on each side. Will also return the top three users if the
-// user and his neighbors are not among them. Please note that this behavior is
+// user and their neighbors are not among them. Please note that this behavior is
 // subject to change.
 type GetGameHighScoresRequest struct {
 	// Target user id

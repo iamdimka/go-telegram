@@ -6,12 +6,12 @@
       {
         "field": "update_id",
         "type": "int64",
-        "description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using Webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially."
+        "description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially."
       },
       {
         "field": "message",
         "type": "Message",
-        "description": "*Optional*. New incoming message of any kind — text, photo, sticker, etc.",
+        "description": "*Optional*. New incoming message of any kind - text, photo, sticker, etc.",
         "optional": true
       },
       {
@@ -23,7 +23,7 @@
       {
         "field": "channel_post",
         "type": "Message",
-        "description": "*Optional*. New incoming channel post of any kind — text, photo, sticker, etc.",
+        "description": "*Optional*. New incoming channel post of any kind - text, photo, sticker, etc.",
         "optional": true
       },
       {
@@ -96,7 +96,7 @@
   },
   {
     "name": "WebhookInfo",
-    "description": "Contains information about the current status of a webhook.",
+    "description": "Describes the current status of a webhook.",
     "additional": "**Optional** fields may be not returned when irrelevant.",
     "fields": [
       {
@@ -142,7 +142,7 @@
       {
         "field": "max_connections",
         "type": "int",
-        "description": "*Optional*. Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery",
+        "description": "*Optional*. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery",
         "optional": true
       },
       {
@@ -189,6 +189,18 @@
         "field": "language_code",
         "type": "string",
         "description": "*Optional*. IETF language tag of the user's language",
+        "optional": true
+      },
+      {
+        "field": "is_premium",
+        "type": "true",
+        "description": "*Optional*. *True*, if this user is a Telegram Premium user",
+        "optional": true
+      },
+      {
+        "field": "added_to_attachment_menu",
+        "type": "true",
+        "description": "*Optional*. *True*, if this user added the bot to the attachment menu",
         "optional": true
       },
       {
@@ -250,9 +262,27 @@
         "optional": true
       },
       {
+        "field": "is_forum",
+        "type": "true",
+        "description": "*Optional*. *True*, if the supergroup chat is a forum (has topics enabled)",
+        "optional": true
+      },
+      {
         "field": "photo",
         "type": "ChatPhoto",
         "description": "*Optional*. Chat photo. Returned only in getChat.",
+        "optional": true
+      },
+      {
+        "field": "active_usernames",
+        "type": "[string]",
+        "description": "*Optional*. If non-empty, the list of all active chat usernames; for private chats, supergroups and channels. Returned only in getChat.",
+        "optional": true
+      },
+      {
+        "field": "emoji_status_custom_emoji_id",
+        "type": "string",
+        "description": "*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in getChat.",
         "optional": true
       },
       {
@@ -264,7 +294,25 @@
       {
         "field": "has_private_forwards",
         "type": "true",
-        "description": "*Optional*. True, if privacy settings of the other party in the private chat allows to use `tg://user?id=<user_id>` links only in chats with the user. Returned only in getChat.",
+        "description": "*Optional*. *True*, if privacy settings of the other party in the private chat allows to use `tg://user?id=<user_id>` links only in chats with the user. Returned only in getChat.",
+        "optional": true
+      },
+      {
+        "field": "has_restricted_voice_and_video_messages",
+        "type": "true",
+        "description": "*Optional*. *True*, if the privacy settings of the other party restrict sending voice and video note messages in the private chat. Returned only in getChat.",
+        "optional": true
+      },
+      {
+        "field": "join_to_send_messages",
+        "type": "true",
+        "description": "*Optional*. *True*, if users need to join the supergroup before they can send messages. Returned only in getChat.",
+        "optional": true
+      },
+      {
+        "field": "join_by_request",
+        "type": "true",
+        "description": "*Optional*. *True*, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in getChat.",
         "optional": true
       },
       {
@@ -306,7 +354,7 @@
       {
         "field": "has_protected_content",
         "type": "true",
-        "description": "*Optional*. True, if messages from the chat can't be forwarded to other chats. Returned only in getChat.",
+        "description": "*Optional*. *True*, if messages from the chat can't be forwarded to other chats. Returned only in getChat.",
         "optional": true
       },
       {
@@ -345,6 +393,12 @@
         "description": "Unique message identifier inside this chat"
       },
       {
+        "field": "message_thread_id",
+        "type": "int64",
+        "description": "*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only",
+        "optional": true
+      },
+      {
         "field": "from",
         "type": "User",
         "description": "*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
@@ -353,7 +407,7 @@
       {
         "field": "sender_chat",
         "type": "Chat",
-        "description": "*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group.  For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
+        "description": "*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
         "optional": true
       },
       {
@@ -403,9 +457,15 @@
         "optional": true
       },
       {
+        "field": "is_topic_message",
+        "type": "true",
+        "description": "*Optional*. *True*, if the message is sent to a forum topic",
+        "optional": true
+      },
+      {
         "field": "is_automatic_forward",
         "type": "true",
-        "description": "*Optional*. True, if the message is a channel post that was automatically forwarded to the connected discussion group",
+        "description": "*Optional*. *True*, if the message is a channel post that was automatically forwarded to the connected discussion group",
         "optional": true
       },
       {
@@ -429,7 +489,7 @@
       {
         "field": "has_protected_content",
         "type": "true",
-        "description": "*Optional*. True, if the message can't be forwarded",
+        "description": "*Optional*. *True*, if the message can't be forwarded",
         "optional": true
       },
       {
@@ -447,7 +507,7 @@
       {
         "field": "text",
         "type": "string",
-        "description": "*Optional*. For text messages, the actual UTF-8 text of the message, 0-4096 characters",
+        "description": "*Optional*. For text messages, the actual UTF-8 text of the message",
         "optional": true
       },
       {
@@ -507,7 +567,7 @@
       {
         "field": "caption",
         "type": "string",
-        "description": "*Optional*. Caption for the animation, audio, document, photo, video or voice, 0-1024 characters",
+        "description": "*Optional*. Caption for the animation, audio, document, photo, video or voice",
         "optional": true
       },
       {
@@ -655,6 +715,24 @@
         "optional": true
       },
       {
+        "field": "forum_topic_created",
+        "type": "ForumTopicCreated",
+        "description": "*Optional*. Service message: forum topic created",
+        "optional": true
+      },
+      {
+        "field": "forum_topic_closed",
+        "type": "ForumTopicClosed",
+        "description": "*Optional*. Service message: forum topic closed",
+        "optional": true
+      },
+      {
+        "field": "forum_topic_reopened",
+        "type": "ForumTopicReopened",
+        "description": "*Optional*. Service message: forum topic reopened",
+        "optional": true
+      },
+      {
         "field": "video_chat_scheduled",
         "type": "VideoChatScheduled",
         "description": "*Optional*. Service message: video chat scheduled",
@@ -710,7 +788,7 @@
       {
         "field": "type",
         "type": "string",
-        "description": "Type of the entity. Currently, can be \"mention\" (`@username`), \"hashtag\" (`#hashtag`), \"cashtag\" (`$USD`), \"bot_command\" (`/start@jobs_bot`), \"url\" (`https://telegram.org`), \"email\" (`do-not-reply@telegram.org`), \"phone_number\" (`+1-212-555-0123`), \"bold\" (**bold text**), \"italic\" (*italic text*), \"underline\" (underlined text), \"strikethrough\" (strikethrough text), \"spoiler\" (spoiler message), \"code\" (monowidth string), \"pre\" (monowidth block), \"text_link\" (for clickable text URLs), \"text_mention\" (for users without usernames)",
+        "description": "Type of the entity. Currently, can be \"mention\" (`@username`), \"hashtag\" (`#hashtag`), \"cashtag\" (`$USD`), \"bot_command\" (`/start@jobs_bot`), \"url\" (`https://telegram.org`), \"email\" (`do-not-reply@telegram.org`), \"phone_number\" (`+1-212-555-0123`), \"bold\" (**bold text**), \"italic\" (*italic text*), \"underline\" (underlined text), \"strikethrough\" (strikethrough text), \"spoiler\" (spoiler message), \"code\" (monowidth string), \"pre\" (monowidth block), \"text_link\" (for clickable text URLs), \"text_mention\" (for users without usernames), \"custom_emoji\" (for inline custom emoji stickers)",
         "optional": true
       },
       {
@@ -726,7 +804,7 @@
       {
         "field": "url",
         "type": "string",
-        "description": "*Optional*. For \"text_link\" only, url that will be opened after user taps on the text",
+        "description": "*Optional*. For \"text_link\" only, URL that will be opened after user taps on the text",
         "optional": true
       },
       {
@@ -739,6 +817,12 @@
         "field": "language",
         "type": "string",
         "description": "*Optional*. For \"pre\" only, the programming language of the entity text",
+        "optional": true
+      },
+      {
+        "field": "custom_emoji_id",
+        "type": "string",
+        "description": "*Optional*. For \"custom_emoji\" only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker",
         "optional": true
       }
     ]
@@ -825,7 +909,7 @@
       {
         "field": "file_size",
         "type": "int",
-        "description": "*Optional*. File size in bytes",
+        "description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
         "optional": true
       }
     ]
@@ -876,7 +960,7 @@
       {
         "field": "file_size",
         "type": "int",
-        "description": "*Optional*. File size in bytes",
+        "description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
         "optional": true
       },
       {
@@ -922,7 +1006,7 @@
       {
         "field": "file_size",
         "type": "int",
-        "description": "*Optional*. File size in bytes",
+        "description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
         "optional": true
       }
     ]
@@ -971,13 +1055,13 @@
       {
         "field": "mime_type",
         "type": "string",
-        "description": "*Optional*. Mime type of a file as defined by sender",
+        "description": "*Optional*. MIME type of the file as defined by sender",
         "optional": true
       },
       {
         "field": "file_size",
         "type": "int",
-        "description": "*Optional*. File size in bytes",
+        "description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
         "optional": true
       }
     ]
@@ -1048,7 +1132,7 @@
       {
         "field": "file_size",
         "type": "int",
-        "description": "*Optional*. File size in bytes",
+        "description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
         "optional": true
       }
     ]
@@ -1254,7 +1338,7 @@
       {
         "field": "proximity_alert_radius",
         "type": "int",
-        "description": "*Optional*. Maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.",
+        "description": "*Optional*. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.",
         "optional": true
       }
     ]
@@ -1306,7 +1390,7 @@
   },
   {
     "name": "WebAppData",
-    "description": "Contains data sent from a Web App to the bot.",
+    "description": "Describes data sent from a Web App to the bot.",
     "fields": [
       {
         "field": "data",
@@ -1316,7 +1400,7 @@
       {
         "field": "button_text",
         "type": "string",
-        "description": "Text of the *web_app* keyboard button, from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.",
+        "description": "Text of the *web_app* keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.",
         "optional": true
       }
     ]
@@ -1350,6 +1434,28 @@
         "field": "message_auto_delete_time",
         "type": "int",
         "description": "New auto-delete time for messages in the chat; in seconds"
+      }
+    ]
+  },
+  {
+    "name": "ForumTopicCreated",
+    "description": "This object represents a service message about a new forum topic created in the chat.",
+    "fields": [
+      {
+        "field": "name",
+        "type": "string",
+        "description": "Name of the topic"
+      },
+      {
+        "field": "icon_color",
+        "type": "int",
+        "description": "Color of the topic icon in RGB format"
+      },
+      {
+        "field": "icon_custom_emoji_id",
+        "type": "string",
+        "description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon",
+        "optional": true
       }
     ]
   },
@@ -1405,7 +1511,7 @@
   {
     "name": "File",
     "description": "This object represents a file ready to be downloaded. The file can be downloaded via the link `https://api.telegram.org/file/bot<token>/<file_path>`. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling getFile.",
-    "additional": "Maximum file size to download is 20 MB",
+    "additional": "The maximum file size to download is 20 MB",
     "fields": [
       {
         "field": "file_id",
@@ -1420,7 +1526,7 @@
       {
         "field": "file_size",
         "type": "int",
-        "description": "*Optional*. File size in bytes, if known",
+        "description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
         "optional": true
       },
       {
@@ -1433,7 +1539,7 @@
   },
   {
     "name": "WebAppInfo",
-    "description": "Contains information about a Web App.",
+    "description": "Describes a Web App.",
     "fields": [
       {
         "field": "url",
@@ -1460,7 +1566,7 @@
       {
         "field": "one_time_keyboard",
         "type": "boolean",
-        "description": "*Optional*. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again. Defaults to *false*.",
+        "description": "*Optional*. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to *false*.",
         "optional": true
       },
       {
@@ -1565,7 +1671,7 @@
       {
         "field": "url",
         "type": "string",
-        "description": "*Optional*. HTTP or tg:// url to be opened when the button is pressed. Links `tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
+        "description": "*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links `tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
         "optional": true
       },
       {
@@ -1583,19 +1689,19 @@
       {
         "field": "login_url",
         "type": "LoginUrl",
-        "description": "*Optional*. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.",
+        "description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.",
         "optional": true
       },
       {
         "field": "switch_inline_query",
         "type": "string",
-        "description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. Can be empty, in which case just the bot's username will be inserted.\n\n**Note:** This offers an easy way for users to start using your bot in inline mode when they are currently in a private chat with it. Especially useful when combined with *switch_pm…* actions – in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
+        "description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted.\n\n**Note:** This offers an easy way for users to start using your bot in inline mode when they are currently in a private chat with it. Especially useful when combined with *switch_pm…* actions - in this case the user will be automatically returned to the chat they switched from, skipping the chat selection screen.",
         "optional": true
       },
       {
         "field": "switch_inline_query_current_chat",
         "type": "string",
-        "description": "*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot's username will be inserted.\n\nThis offers a quick way for the user to open your bot in inline mode in the same chat – good for selecting something from multiple options.",
+        "description": "*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.\n\nThis offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options.",
         "optional": true
       },
       {
@@ -1620,7 +1726,7 @@
       {
         "field": "url",
         "type": "string",
-        "description": "An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.\n\n**NOTE:** You **must** always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization."
+        "description": "An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.\n\n**NOTE:** You **must** always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization."
       },
       {
         "field": "forward_text",
@@ -1677,7 +1783,7 @@
       {
         "field": "data",
         "type": "string",
-        "description": "*Optional*. Data associated with the callback button. Be aware that a bad client can send arbitrary data in this field.",
+        "description": "*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data.",
         "optional": true
       },
       {
@@ -1691,7 +1797,7 @@
   {
     "name": "ForceReply",
     "description": "Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice privacy mode.",
-    "additional": "**Example:** A poll bot for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\n\n\n  - Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\n\n  - Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.\n\nThe last option is definitely more attractive. And if you use ForceReply in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions — without any extra work for the user.",
+    "additional": "**Example:** A poll bot for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:\n\n\n  - Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.\n\n  - Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.\n\nThe last option is definitely more attractive. And if you use ForceReply in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions - without any extra work for the user.",
     "fields": [
       {
         "field": "force_reply",
@@ -1785,7 +1891,7 @@
       {
         "field": "member_limit",
         "type": "int",
-        "description": "*Optional*. Maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+        "description": "*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
         "optional": true
       },
       {
@@ -1864,6 +1970,12 @@
         "field": "can_pin_messages",
         "type": "boolean",
         "description": "*Optional*. *True*, if the user is allowed to pin messages; groups and supergroups only",
+        "optional": true
+      },
+      {
+        "field": "can_manage_topics",
+        "type": "boolean",
+        "description": "*Optional*. *True*, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only",
         "optional": true
       }
     ]
@@ -1983,6 +2095,12 @@
         "optional": true
       },
       {
+        "field": "can_manage_topics",
+        "type": "boolean",
+        "description": "*Optional*. *True*, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only",
+        "optional": true
+      },
+      {
         "field": "custom_title",
         "type": "string",
         "description": "*Optional*. Custom title for this user",
@@ -2042,6 +2160,12 @@
         "field": "can_pin_messages",
         "type": "boolean",
         "description": "*True*, if the user is allowed to pin messages",
+        "optional": true
+      },
+      {
+        "field": "can_manage_topics",
+        "type": "boolean",
+        "description": "*True*, if the user is allowed to create forum topics",
         "optional": true
       },
       {
@@ -2239,6 +2363,12 @@
         "type": "boolean",
         "description": "*Optional*. *True*, if the user is allowed to pin messages. Ignored in public supergroups",
         "optional": true
+      },
+      {
+        "field": "can_manage_topics",
+        "type": "boolean",
+        "description": "*Optional*. *True*, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages",
+        "optional": true
       }
     ]
   },
@@ -2255,6 +2385,33 @@
         "field": "address",
         "type": "string",
         "description": "Location address; 1-64 characters, as defined by the chat owner"
+      }
+    ]
+  },
+  {
+    "name": "ForumTopic",
+    "description": "This object represents a forum topic.",
+    "fields": [
+      {
+        "field": "message_thread_id",
+        "type": "int64",
+        "description": "Unique identifier of the forum topic"
+      },
+      {
+        "field": "name",
+        "type": "string",
+        "description": "Name of the topic"
+      },
+      {
+        "field": "icon_color",
+        "type": "int",
+        "description": "Color of the topic icon in RGB format"
+      },
+      {
+        "field": "icon_custom_emoji_id",
+        "type": "string",
+        "description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon",
+        "optional": true
       }
     ]
   },
@@ -2426,7 +2583,7 @@
   },
   {
     "name": "ResponseParameters",
-    "description": "Contains information about why a request was unsuccessful.",
+    "description": "Describes why a request was unsuccessful.",
     "fields": [
       {
         "field": "migrate_to_chat_id",
@@ -2455,7 +2612,7 @@
       {
         "field": "media",
         "type": "string",
-        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More info on Sending Files »"
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »"
       },
       {
         "field": "caption",
@@ -2490,12 +2647,12 @@
       {
         "field": "media",
         "type": "string",
-        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More info on Sending Files »"
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »"
       },
       {
         "field": "thumb",
         "type": "InputFile",
-        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More info on Sending Files »",
+        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »",
         "optional": true
       },
       {
@@ -2537,7 +2694,7 @@
       {
         "field": "supports_streaming",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if the uploaded video is suitable for streaming",
+        "description": "*Optional*. Pass *True* if the uploaded video is suitable for streaming",
         "optional": true
       }
     ]
@@ -2555,12 +2712,12 @@
       {
         "field": "media",
         "type": "string",
-        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More info on Sending Files »"
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »"
       },
       {
         "field": "thumb",
         "type": "InputFile",
-        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More info on Sending Files »",
+        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »",
         "optional": true
       },
       {
@@ -2614,12 +2771,12 @@
       {
         "field": "media",
         "type": "string",
-        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More info on Sending Files »"
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »"
       },
       {
         "field": "thumb",
         "type": "InputFile",
-        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More info on Sending Files »",
+        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »",
         "optional": true
       },
       {
@@ -2673,12 +2830,12 @@
       {
         "field": "media",
         "type": "string",
-        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More info on Sending Files »"
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass \"attach://<file_attach_name>\" to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »"
       },
       {
         "field": "thumb",
         "type": "InputFile",
-        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More info on Sending Files »",
+        "description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass \"attach://<file_attach_name>\" if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »",
         "optional": true
       },
       {
@@ -2722,6 +2879,12 @@
         "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."
       },
       {
+        "field": "type",
+        "type": "string",
+        "description": "Type of the sticker, currently one of \"regular\", \"mask\", \"custom_emoji\". The type of the sticker is independent from its format, which is determined by the fields *is_animated* and *is_video*.",
+        "optional": true
+      },
+      {
         "field": "width",
         "type": "int",
         "description": "Sticker width"
@@ -2762,9 +2925,21 @@
         "optional": true
       },
       {
+        "field": "premium_animation",
+        "type": "File",
+        "description": "*Optional*. For premium regular stickers, premium animation for the sticker",
+        "optional": true
+      },
+      {
         "field": "mask_position",
         "type": "MaskPosition",
         "description": "*Optional*. For mask stickers, the position where the mask should be placed",
+        "optional": true
+      },
+      {
+        "field": "custom_emoji_id",
+        "type": "string",
+        "description": "*Optional*. For custom emoji stickers, unique identifier of the custom emoji",
         "optional": true
       },
       {
@@ -2790,6 +2965,11 @@
         "description": "Sticker set title"
       },
       {
+        "field": "sticker_type",
+        "type": "string",
+        "description": "Type of stickers in the set, currently one of \"regular\", \"mask\", \"custom_emoji\""
+      },
+      {
         "field": "is_animated",
         "type": "boolean",
         "description": "*True*, if the sticker set contains animated stickers",
@@ -2799,12 +2979,6 @@
         "field": "is_video",
         "type": "boolean",
         "description": "*True*, if the sticker set contains video stickers",
-        "optional": true
-      },
-      {
-        "field": "contains_masks",
-        "type": "boolean",
-        "description": "*True*, if the sticker set contains masks",
         "optional": true
       },
       {
@@ -2873,7 +3047,7 @@
       {
         "field": "chat_type",
         "type": "string",
-        "description": "*Optional*. Type of the chat, from which the inline query was sent. Can be either \"sender\" for a private chat with the inline query sender, \"private\", \"group\", \"supergroup\", or \"channel\". The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
+        "description": "*Optional*. Type of the chat from which the inline query was sent. Can be either \"sender\" for a private chat with the inline query sender, \"private\", \"group\", \"supergroup\", or \"channel\". The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
         "optional": true
       },
       {
@@ -2924,7 +3098,7 @@
       {
         "field": "hide_url",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if you don't want the URL to be shown in the message",
+        "description": "*Optional*. Pass *True* if you don't want the URL to be shown in the message",
         "optional": true
       },
       {
@@ -3139,7 +3313,7 @@
       {
         "field": "mpeg4_url",
         "type": "string",
-        "description": "A valid URL for the MP4 file. File size must not exceed 1MB"
+        "description": "A valid URL for the MPEG4 file. File size must not exceed 1MB"
       },
       {
         "field": "mpeg4_width",
@@ -3232,7 +3406,7 @@
       {
         "field": "mime_type",
         "type": "string",
-        "description": "Mime type of the content of video url, \"text/html\" or \"video/mp4\""
+        "description": "MIME type of the content of the video URL, \"text/html\" or \"video/mp4\""
       },
       {
         "field": "thumb_url",
@@ -3478,7 +3652,7 @@
       {
         "field": "mime_type",
         "type": "string",
-        "description": "Mime type of the content of the file, either \"application/pdf\" or \"application/zip\""
+        "description": "MIME type of the content of the file, either \"application/pdf\" or \"application/zip\""
       },
       {
         "field": "description",
@@ -3932,7 +4106,7 @@
       {
         "field": "mpeg4_file_id",
         "type": "string",
-        "description": "A valid file identifier for the MP4 file"
+        "description": "A valid file identifier for the MPEG4 file"
       },
       {
         "field": "title",
@@ -4410,7 +4584,7 @@
       {
         "field": "provider_token",
         "type": "string",
-        "description": "Payment provider token, obtained via Botfather"
+        "description": "Payment provider token, obtained via @BotFather"
       },
       {
         "field": "currency",
@@ -4443,13 +4617,13 @@
       {
         "field": "photo_url",
         "type": "string",
-        "description": "*Optional*. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.",
+        "description": "*Optional*. URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.",
         "optional": true
       },
       {
         "field": "photo_size",
         "type": "int",
-        "description": "*Optional*. Photo size",
+        "description": "*Optional*. Photo size in bytes",
         "optional": true
       },
       {
@@ -4467,43 +4641,43 @@
       {
         "field": "need_name",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if you require the user's full name to complete the order",
+        "description": "*Optional*. Pass *True* if you require the user's full name to complete the order",
         "optional": true
       },
       {
         "field": "need_phone_number",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if you require the user's phone number to complete the order",
+        "description": "*Optional*. Pass *True* if you require the user's phone number to complete the order",
         "optional": true
       },
       {
         "field": "need_email",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if you require the user's email address to complete the order",
+        "description": "*Optional*. Pass *True* if you require the user's email address to complete the order",
         "optional": true
       },
       {
         "field": "need_shipping_address",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if you require the user's shipping address to complete the order",
+        "description": "*Optional*. Pass *True* if you require the user's shipping address to complete the order",
         "optional": true
       },
       {
         "field": "send_phone_number_to_provider",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if user's phone number should be sent to provider",
+        "description": "*Optional*. Pass *True* if the user's phone number should be sent to provider",
         "optional": true
       },
       {
         "field": "send_email_to_provider",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if user's email address should be sent to provider",
+        "description": "*Optional*. Pass *True* if the user's email address should be sent to provider",
         "optional": true
       },
       {
         "field": "is_flexible",
         "type": "boolean",
-        "description": "*Optional*. Pass *True*, if the final price depends on the shipping method",
+        "description": "*Optional*. Pass *True* if the final price depends on the shipping method",
         "optional": true
       }
     ]
@@ -4543,7 +4717,7 @@
   },
   {
     "name": "SentWebAppMessage",
-    "description": "Contains information about an inline message sent by a Web App on behalf of a user.",
+    "description": "Describes an inline message sent by a Web App on behalf of a user.",
     "fields": [
       {
         "field": "inline_message_id",
@@ -4609,7 +4783,7 @@
       {
         "field": "country_code",
         "type": "string",
-        "description": "ISO 3166-1 alpha-2 country code"
+        "description": "Two-letter ISO 3166-1 alpha-2 country code"
       },
       {
         "field": "state",
@@ -4718,7 +4892,7 @@
       {
         "field": "order_info",
         "type": "OrderInfo",
-        "description": "*Optional*. Order info provided by the user",
+        "description": "*Optional*. Order information provided by the user",
         "optional": true
       },
       {
@@ -4798,14 +4972,14 @@
       {
         "field": "order_info",
         "type": "OrderInfo",
-        "description": "*Optional*. Order info provided by the user",
+        "description": "*Optional*. Order information provided by the user",
         "optional": true
       }
     ]
   },
   {
     "name": "PassportData",
-    "description": "Contains information about Telegram Passport data shared with the bot by the user.",
+    "description": "Describes Telegram Passport data shared with the bot by the user.",
     "fields": [
       {
         "field": "data",
@@ -4847,7 +5021,7 @@
   },
   {
     "name": "EncryptedPassportElement",
-    "description": "Contains information about documents or other Telegram Passport elements shared with the bot by the user.",
+    "description": "Describes documents or other Telegram Passport elements shared with the bot by the user.",
     "fields": [
       {
         "field": "type",
@@ -4911,7 +5085,7 @@
   },
   {
     "name": "EncryptedCredentials",
-    "description": "Contains data required for decrypting and authenticating EncryptedPassportElement. See the Telegram Passport Documentation for a complete description of the data decryption and authentication processes.",
+    "description": "Describes data required for decrypting and authenticating EncryptedPassportElement. See the Telegram Passport Documentation for a complete description of the data decryption and authentication processes.",
     "fields": [
       {
         "field": "data",

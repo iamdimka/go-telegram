@@ -18,12 +18,20 @@ func (b *Bot) DeleteWebhook(request *DeleteWebhookRequest) (result bool, err err
 }
 
 func (b *Bot) GetWebhookInfo() (result *WebhookInfo, err error) {
+	result = &WebhookInfo{}
 	err = b.request("getWebhookInfo", nil, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) GetMe() (result *User, err error) {
+	result = &User{}
 	err = b.request("getMe", nil, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -38,52 +46,92 @@ func (b *Bot) Close() (result bool, err error) {
 }
 
 func (b *Bot) SendMessage(request *SendMessageRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendMessage", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) ForwardMessage(request *ForwardMessageRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("forwardMessage", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) CopyMessage(request *CopyMessageRequest) (result *MessageId, err error) {
+	result = &MessageId{}
 	err = b.request("copyMessage", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendPhoto(request *SendPhotoRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendPhoto", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendAudio(request *SendAudioRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendAudio", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendDocument(request *SendDocumentRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendDocument", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendVideo(request *SendVideoRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendVideo", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendAnimation(request *SendAnimationRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendAnimation", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendVoice(request *SendVoiceRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendVoice", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendVideoNote(request *SendVideoNoteRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendVideoNote", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -93,37 +141,65 @@ func (b *Bot) SendMediaGroup(request *SendMediaGroupRequest) (result []json.RawM
 }
 
 func (b *Bot) SendLocation(request *SendLocationRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendLocation", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) EditMessageLiveLocation(request *EditMessageLiveLocationRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("editMessageLiveLocation", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) StopMessageLiveLocation(request *StopMessageLiveLocationRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("stopMessageLiveLocation", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendVenue(request *SendVenueRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendVenue", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendContact(request *SendContactRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendContact", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendPoll(request *SendPollRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendPoll", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendDice(request *SendDiceRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendDice", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -133,12 +209,20 @@ func (b *Bot) SendChatAction(request *SendChatActionRequest) (result bool, err e
 }
 
 func (b *Bot) GetUserProfilePhotos(request *GetUserProfilePhotosRequest) (result *UserProfilePhotos, err error) {
+	result = &UserProfilePhotos{}
 	err = b.request("getUserProfilePhotos", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) GetFile(request *GetFileRequest) (result *File, err error) {
+	result = &File{}
 	err = b.request("getFile", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -188,17 +272,29 @@ func (b *Bot) ExportChatInviteLink(request *ExportChatInviteLinkRequest) (result
 }
 
 func (b *Bot) CreateChatInviteLink(request *CreateChatInviteLinkRequest) (result *ChatInviteLink, err error) {
+	result = &ChatInviteLink{}
 	err = b.request("createChatInviteLink", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) EditChatInviteLink(request *EditChatInviteLinkRequest) (result *ChatInviteLink, err error) {
+	result = &ChatInviteLink{}
 	err = b.request("editChatInviteLink", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) RevokeChatInviteLink(request *RevokeChatInviteLinkRequest) (result *ChatInviteLink, err error) {
+	result = &ChatInviteLink{}
 	err = b.request("revokeChatInviteLink", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -253,7 +349,11 @@ func (b *Bot) LeaveChat(request *LeaveChatRequest) (result bool, err error) {
 }
 
 func (b *Bot) GetChat(request *GetChatRequest) (result *Chat, err error) {
+	result = &Chat{}
 	err = b.request("getChat", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -279,6 +379,45 @@ func (b *Bot) SetChatStickerSet(request *SetChatStickerSetRequest) (result bool,
 
 func (b *Bot) DeleteChatStickerSet(request *DeleteChatStickerSetRequest) (result bool, err error) {
 	err = b.request("deleteChatStickerSet", request, &result)
+	return
+}
+
+func (b *Bot) GetForumTopicIconStickers() (result []*Sticker, err error) {
+	err = b.request("getForumTopicIconStickers", nil, &result)
+	return
+}
+
+func (b *Bot) CreateForumTopic(request *CreateForumTopicRequest) (result *ForumTopic, err error) {
+	result = &ForumTopic{}
+	err = b.request("createForumTopic", request, result)
+	if err != nil {
+		result = nil;
+	}
+	return
+}
+
+func (b *Bot) EditForumTopic(request *EditForumTopicRequest) (result bool, err error) {
+	err = b.request("editForumTopic", request, &result)
+	return
+}
+
+func (b *Bot) CloseForumTopic(request *CloseForumTopicRequest) (result bool, err error) {
+	err = b.request("closeForumTopic", request, &result)
+	return
+}
+
+func (b *Bot) ReopenForumTopic(request *ReopenForumTopicRequest) (result bool, err error) {
+	err = b.request("reopenForumTopic", request, &result)
+	return
+}
+
+func (b *Bot) DeleteForumTopic(request *DeleteForumTopicRequest) (result bool, err error) {
+	err = b.request("deleteForumTopic", request, &result)
+	return
+}
+
+func (b *Bot) UnpinAllForumTopicMessages(request *UnpinAllForumTopicMessagesRequest) (result bool, err error) {
+	err = b.request("unpinAllForumTopicMessages", request, &result)
 	return
 }
 
@@ -318,32 +457,56 @@ func (b *Bot) SetMyDefaultAdministratorRights(request *SetMyDefaultAdministrator
 }
 
 func (b *Bot) GetMyDefaultAdministratorRights(request *GetMyDefaultAdministratorRightsRequest) (result *ChatAdministratorRights, err error) {
+	result = &ChatAdministratorRights{}
 	err = b.request("getMyDefaultAdministratorRights", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) EditMessageText(request *EditMessageTextRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("editMessageText", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) EditMessageCaption(request *EditMessageCaptionRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("editMessageCaption", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) EditMessageMedia(request *EditMessageMediaRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("editMessageMedia", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) EditMessageReplyMarkup(request *EditMessageReplyMarkupRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("editMessageReplyMarkup", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) StopPoll(request *StopPollRequest) (result *Poll, err error) {
+	result = &Poll{}
 	err = b.request("stopPoll", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -353,17 +516,34 @@ func (b *Bot) DeleteMessage(request *DeleteMessageRequest) (result bool, err err
 }
 
 func (b *Bot) SendSticker(request *SendStickerRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendSticker", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) GetStickerSet(request *GetStickerSetRequest) (result *StickerSet, err error) {
+	result = &StickerSet{}
 	err = b.request("getStickerSet", request, result)
+	if err != nil {
+		result = nil;
+	}
+	return
+}
+
+func (b *Bot) GetCustomEmojiStickers(request *GetCustomEmojiStickersRequest) (result []*Sticker, err error) {
+	err = b.request("getCustomEmojiStickers", request, &result)
 	return
 }
 
 func (b *Bot) UploadStickerFile(request *UploadStickerFileRequest) (result *File, err error) {
+	result = &File{}
 	err = b.request("uploadStickerFile", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
@@ -398,12 +578,25 @@ func (b *Bot) AnswerInlineQuery(request *AnswerInlineQueryRequest) (result bool,
 }
 
 func (b *Bot) AnswerWebAppQuery(request *AnswerWebAppQueryRequest) (result *SentWebAppMessage, err error) {
+	result = &SentWebAppMessage{}
 	err = b.request("answerWebAppQuery", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SendInvoice(request *SendInvoiceRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendInvoice", request, result)
+	if err != nil {
+		result = nil;
+	}
+	return
+}
+
+func (b *Bot) CreateInvoiceLink(request *CreateInvoiceLinkRequest) (result string, err error) {
+	err = b.request("createInvoiceLink", request, &result)
 	return
 }
 
@@ -423,12 +616,20 @@ func (b *Bot) SetPassportDataErrors(request *SetPassportDataErrorsRequest) (resu
 }
 
 func (b *Bot) SendGame(request *SendGameRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("sendGame", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
 func (b *Bot) SetGameScore(request *SetGameScoreRequest) (result *Message, err error) {
+	result = &Message{}
 	err = b.request("setGameScore", request, result)
+	if err != nil {
+		result = nil;
+	}
 	return
 }
 
